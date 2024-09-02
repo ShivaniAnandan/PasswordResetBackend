@@ -138,6 +138,7 @@ export const forgetPassword = async(req,res)=>{
                     })
                 }
                 user.randomString=randomString
+                console.log(randomString)
                  user.save()
                 res.status(201).send({message:"Reset password email sent successfully and random string update in db"})
             })
