@@ -1,7 +1,8 @@
 import userModel from "../Model/userSchema.js";
 import auth from "../Common/auth.js";
 import randomstring from "randomstring";
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
 
 
 export const signup = async(req,res)=>{
@@ -37,11 +38,14 @@ export const login = async(req,res)=>{
      if(user)
      {
         let hashcompare = await auth.hashcompare(req.body.password,user.password)
+        const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+        
         if(hashcompare)
         {
             const user = await userModel.findOne({email:req.body.email},{password:0})
             res.status(201).send({
                 message:` User ${user.userName} is login successfully`,
+                token,
                 user
 
             })
